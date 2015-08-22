@@ -34,6 +34,7 @@ class SetUserLoginCredentials
         $user->logged_in_at = Carbon::now();
         $user->ip_address = $this->request->getClientIp();
         $user->save();
+        
     }
 
 }

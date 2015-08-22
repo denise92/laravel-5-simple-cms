@@ -1,5 +1,4 @@
 <?php
-
 if( ! function_exists('get_ops'))
 {
     /**
@@ -14,9 +13,9 @@ if( ! function_exists('get_ops'))
     {
         if($class=="btn")
         {
-            $show_class = "btn btn-xs bg-navy";
-            $edit_class = "btn btn-xs bg-olive";
-            $delete_class = "btn btn-xs btn-danger destroy";
+            $show_class = "btn btn-xs blue-madison";
+            $edit_class = "btn btn-xs green-meadow";
+            $delete_class = "btn btn-xs red-sunglo destroy";
         }
         else
         {
@@ -35,44 +34,13 @@ if( ! function_exists('get_ops'))
         $ops .=  '<a class="'.$edit_class.'" href="'.$edit_path.'"><i class="fa fa-pencil-square-o"></i> '.trans('admin.ops.edit').'</a>';
         $ops .=  '</li>';
         $ops .=  '<li>';
+        $ops .=  '';
         $ops .= Form::open(['method' => 'DELETE', 'url' => $delete_path]);
         $ops .= Form::submit('&#xf1f8; ' .trans('admin.ops.delete'), ['onclick' => "return confirm('".trans('admin.ops.confirmation')."');", 'class' => $delete_class]);
         $ops .= Form::close();
         $ops .=  '</li>';
         $ops .=  '</ul>';
         return $ops;
-    }
-}
-
-
-if ( ! function_exists('breadcrumbs'))
-{
-    /**
-     * Return breadcrumbs for each resource methods
-     *
-     * @return string
-     */
-    function breadcrumbs()
-    {
-        $route = Route::currentRouteName();
-        // get after last dot
-        $index = substr($route, 0, strrpos($route, '.') + 1) . 'index';
-        $breadcrumbs  = '<ol class="breadcrumb">';
-        $breadcrumbs .= '<li><a href="'.route('admin.root').'"><i class="fa fa-dashboard"></i> '.trans('admin.menu.dashboard').'</a></li>';
-        // if not admin root
-        if(strpos($route, 'root')  === false)
-        {
-            $breadcrumbs  .= strpos($route, 'index')  !== false ? '<li class="active">' : '<li>';
-            $parent_text   = strpos($route, 'index')  !== false ? trans($route) : trans($index);
-            $breadcrumbs  .= strpos($route, 'index')  !== false ? $parent_text : '<a href="'.route($index).'">'.$parent_text.'</a>';
-            $breadcrumbs  .= '</li>';
-            if(strpos($route, 'index')  === false)
-            {
-                $breadcrumbs  .= '<li class="active">'.trans($route).'</li>';
-            }
-        }
-        $breadcrumbs .= '</ol>';
-        return $breadcrumbs;
     }
 }
 
@@ -86,7 +54,7 @@ if ( ! function_exists('header_title'))
     function header_title()
     {
         $route = Route::currentRouteName();
-        $title = '<h1>';
+        $title = '<h1 class="page-title">';
         $title .= trans(Route::getCurrentRoute()->getName());
         if( strpos($route, 'index')  !== false )
         {
@@ -104,58 +72,64 @@ if ( ! function_exists('header_title'))
         return $title;
     }
 }
-
-if ( ! function_exists('rename_file'))
+if ( ! function_exists('breadcrumbs'))
 {
     /**
-     * Rename the filename, convert string to url friendly form and attach random string
+     * Return breadcrumbs for each resource methods
      *
-     * @param $filename
-     * @param $mime
      * @return string
      */
-    function rename_file($filename, $mime)
+    function breadcrumbs()
     {
-        // remove extension first
-        $filename = preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
-        $filename = str_slug($filename, "-");
-        $filename = '/' . $filename . '_' . str_random(32) .  '.' . $mime;
-        return $filename;
+        $route = Route::currentRouteName();
+        // get after last dot
+        $index = substr($route, 0, strrpos($route, '.') + 1) . 'index';
+        $breadcrumbs  = '<ul class="page-breadcrumb breadcrumb">';
+
+        $breadcrumbs .= '<li><a href="'.route('admin.root').'"><i class="fa fa-dashboard"></i> '.trans('admin.menu.dashboard').'</a></li>';
+        // if not admin root
+        if(strpos($route, 'root')  === false)
+        {
+            $breadcrumbs  .= strpos($route, 'index')  !== false ? '<li class="active">' : '<li>';
+            $parent_text   = strpos($route, 'index')  !== false ? trans($route) : trans($index);
+            $breadcrumbs  .= strpos($route, 'index')  !== false ? $parent_text : '<a href="'.route($index).'">'.$parent_text.'</a>';
+            $breadcrumbs  .= '</li>';
+            if(strpos($route, 'index')  === false)
+            {
+                $breadcrumbs  .= '<li class="active">'.trans($route).'</li>';
+            }
+        }
+        /*if($route == 'admin.root')
+        {
+            $breadcrumbs  .= '<li class="pull-right">';
+            $breadcrumbs  .= '<div id="dashboard-report-range" class="dashboard-date-range tooltips" data-placement="top" data-original-title="Change dashboard date range">';
+            $breadcrumbs  .= '<i class="icon-calendar"></i>';
+            $breadcrumbs  .= '<span></span>';
+            $breadcrumbs  .= '<i class="fa fa-angle-down"></i>';
+            $breadcrumbs  .= '</div>';
+            $breadcrumbs  .= '</li>';
+            
+        }*/
+        $breadcrumbs .= '</ul>';
+        return $breadcrumbs;
     }
 }
-
-if( ! function_exists('renderNode')) {
-    /**
-     * Render nodes for nested sets
-     *
-     * @param $node
-     * @param $resource
-     * @return string
-     */
-    function renderNode($node, $resource)
+if( ! function_exists('dashboard_box'))
+{
+    function dashboard_box($bg, $icon, $text, $number)
     {
-        $id = 'data-id="' . $node->id .'"';
-        $list = 'class="dd-list"';
-        $class = 'class="dd-item"';
-        $handle = 'class="dd-handle"';
-        $title  = '<span class="ol-buttons"> ' . get_ops($resource, $node->id, 'inline') . '</span>';
-        $title  .= '<div '.$handle.'>' . $node->title . '</div>';
-        if ($node->isLeaf())
-        {
-            return '<li '.$class.' '.$id.'>' . $title . '</li>';
-        }
-        else
-        {
-            $html = '<li '.$class.' '.$id.'>' . $title;
-            $html .= '<ol '.$list.'>';
-            foreach ($node->children as $child)
-            {
-                $html .= renderNode($child, $resource);
-            }
-            $html .= '</ol>';
-            $html .= '</li>';
-        }
-        return $html;
+        $str  = '<div class="col-md-3 col-sm-6 col-xs-12">';
+        $str .= '<div class="dashboard-stat '.$bg.'">';
+        $str .= '<div class="visual">';
+        $str .= '<i class="fa fa-'.$icon.'"></i>';
+        $str .= '</div>';
+        $str .= '<div class="details">';
+        $str .= '<div class="number">'. $number .'</div>';
+        $str .= '<div class="desc">'. $text .'</div>';
+        $str .= '</div>';
+        $str .= '</div>';
+        $str .= '</div>';
+        return $str;
     }
 }
 
@@ -176,21 +150,21 @@ if( ! function_exists('formatMilliseconds'))
     }
 }
 
-if( ! function_exists('dashboard_box'))
+if ( ! function_exists('rename_file'))
 {
-    function dashboard_box($bg, $icon, $text, $number)
+    /**
+     * Rename the filename, convert string to url friendly form and attach random string
+     *
+     * @param $filename
+     * @param $mime
+     * @return string
+     */
+    function rename_file($filename, $mime)
     {
-        $str  = '<div class="col-md-3 col-sm-6 col-xs-12">';
-        $str .= '<div class="info-box">';
-        $str .= '<span class="info-box-icon '.$bg.'">';
-        $str .= '<i class="fa fa-'.$icon.'"></i>';
-        $str .= '</span>';
-        $str .= '<div class="info-box-content">';
-        $str .= '<span class="info-box-text">'. $text .'</span>';
-        $str .= '<span class="info-box-number">'. $number .'</span>';
-        $str .= '</div>';
-        $str .= '</div>';
-        $str .= '</div>';
-        return $str;
+        // remove extension first
+        $filename = preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
+        $filename = str_slug($filename, "-");
+        $filename = '/' . $filename . '_' . str_random(32) .  '.' . $mime;
+        return $filename;
     }
 }

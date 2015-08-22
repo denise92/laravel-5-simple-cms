@@ -24,10 +24,11 @@ class SettingRequest extends Request
     public function rules()
     {
         return [
-            'email'	=> 'required|email|min:7',
-            'facebook' => 'sometimes|min:21|max:200',
-            'twitter' => 'sometimes|min:18|max:200',
-            'logo' => 'sometimes|max:2048|image'
+			'email'        => 'sometimes|email|min:7',
+			'facebook'     => 'sometimes|min:1|max:40',
+			'fb_app_id'    => 'sometimes|min:5|max:40',
+			'analytics_id' => 'sometimes|min:5|max:40',
+			'logo'         => 'sometimes|max:2048|image'
         ];
     }
 

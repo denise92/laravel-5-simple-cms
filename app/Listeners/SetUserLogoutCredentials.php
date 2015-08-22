@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Session;
 
 class SetUserLogoutCredentials
 {

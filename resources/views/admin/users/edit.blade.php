@@ -1,11 +1,28 @@
 @extends('layouts.admin')
 
 @section('content')
-    {!! form($form) !!}
-    @unless ($user->picture == "")
-        <div class="uploaded-file">
-            <strong>{{ trans('admin.fields.uploaded')  }}</strong>
-            <img class="img-responsive" alt="" src="{!! $user->picture  !!}" />
-        </div>
-    @endunless
+{!! form_start($form) !!}
+<div class="form-body">
+	<div class="row">
+		<div class="col-md-6">
+			{!! form_row($form->name) !!}
+		</div>
+		<div class="col-md-6">
+			{!! form_row($form->email) !!}
+		</div>
+		<div class="col-md-6">
+			{!! form_row($form->password) !!}
+		</div>
+		<div class="col-md-6">
+			{!! form_row($form->password_confirmation) !!}
+		</div>
+		<div class="col-md-6">
+			{!! form_row($form->company_id) !!}
+		</div>
+		<div class="col-md-6">
+			{!! form_row($form->group_id) !!}
+		</div>
+	</div>
+</div>
+{!! form_end($form, $renderRest = true); !!}
 @endsection

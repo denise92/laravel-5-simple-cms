@@ -1,47 +1,31 @@
 @extends('layouts.auth')
-
-@section('title')
-    {{ trans('auth.login.title') }}
-@stop
+@section('title'){{ trans('auth.user.login') }}@stop
 
 @section('content')
-
-    <div class="login-box" id="login-box">
-
-        <div class="header">
-            {{ trans('admin.title') }}
+    <h2>{{ trans('auth.user.login') }}</h2>
+    <form method="POST" action="/auth/login">
+        @include('errors.validation')
+        {!! csrf_field() !!}
+        
+        <div>
+            {{ trans('auth.user.email') }}
+            <input type="email" name="email" value="{{ old('email') }}">
         </div>
 
-        {!! Form::open(['method' => 'POST', 'route' => 'auth.login']) !!}
-
-        <div class="body bg-gray-50">
-
-            @include('errors.validation')
-
-            <div class="form-group has-feedback">
-                {!! Form::label('email', trans('auth.login.email')) !!}
-                {!! Form::text('email', null, ['class' => 'form-control']) !!}
-                <i class="fa fa-envelope form-control-feedback"></i>
-            </div>
-
-            <div class="form-group has-feedback">
-                {!! Form::label('password', trans('auth.login.password')) !!}
-                {!! Form::password('password', ['class' => 'form-control']) !!}
-                <i class="fa fa-lock form-control-feedback"></i>
-            </div>
-
-            <div class="form-group">
-                {!! Form::checkbox('remember', '1', true) !!} {{ trans('auth.login.remember') }}
-            </div>
-
+        <div>
+            {{ trans('auth.user.password') }}
+            <input type="password" name="password" id="password">
         </div>
 
-        <div class="footer">
-            {!! Form::submit(trans('auth.login.submit'), ['class' => 'btn bg-olive btn-block btn-flat']) !!}
-            <a class="btn btn-link" href="{{ url('/password/email') }}">{{ trans('auth.login.forgot') }}</a>
+        <div>
+            <input type="checkbox" name="remember"> {{ trans('auth.user.remember') }}
         </div>
 
-        {!!  Form::close() !!}
-    </div>
-
+        <div>
+            <button type="submit">{{ trans('auth.user.btn_login') }}</button>
+            or 
+            <a href="{{ url('/auth/register') }}">{{ trans('auth.user.register') }}</a> | 
+            <a href="{{ url('/password/email') }}">{{ trans('auth.user.forgot') }}</a>
+        </div>
+    </form>
 @endsection

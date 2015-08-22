@@ -39,6 +39,7 @@ class SettingController extends Controller
     {
         $data = $this->storeImage($request, 'logo');
         $setting->fill($data);
+        
         $setting->save() == true ? Flash::success(trans('admin.update.success')) :
             Flash::error(trans('admin.update.fail'));
         return redirect(route('admin.setting.index'));
@@ -54,6 +55,7 @@ class SettingController extends Controller
     private function storeImage(SettingRequest $request, $field)
     {
         $data = $request->except([$field]);
+
         if($request->file($field))
         {
             $file = $request->file($field);

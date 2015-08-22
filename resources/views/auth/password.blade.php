@@ -1,42 +1,24 @@
 @extends('layouts.auth')
-
-@section('title')
-    {{ trans('auth.password.title') }}
-@stop
+@section('title'){{ trans('auth.password.title') }}@stop
 
 @section('content')
+    <h2>{{ trans('auth.password.title') }}</h2>
+    <form method="POST" action="/password/email">
+        @include('errors.validation')
+        {!! csrf_field() !!}
 
-    <div class="login-box" id="login-box">
-
-        <div class="header">
-            {{ trans('auth.password.title') }}
+        <div>
+            {{ trans('auth.user.email') }}
+            <input type="email" name="email" value="{{ old('email') }}">
         </div>
-
-        {!! Form::open(['method' => 'POST', 'url' => '/password/email']) !!}
-
-        <div class="body bg-gray-50">
-
-            @include('errors.validation')
-            @if (session('status'))
-                <div class="alert alert-success">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            <div class="form-group has-feedback">
-                {!! Form::label('email', trans('auth.login.email')) !!}
-                {!! Form::text('email', null, ['class' => 'form-control']) !!}
-                <i class="fa fa-envelope form-control-feedback"></i>
-            </div>
-
+        <div>{{ trans('auth.password.email_content') }}</div>
+        <div>
+            <button type="submit">
+                {{ trans('auth.password.submit') }}
+            </button>
+            or 
+            <a href="{{ url('/auth/register') }}">{{ trans('auth.user.register') }}</a> | 
+            <a href="{{ url('/auth/login') }}">{{ trans('auth.user.login') }}</a>
         </div>
-
-        <div class="footer">
-            {!! Form::submit(trans('auth.password.submit'), ['class' => 'btn bg-olive btn-block btn-flat']) !!}
-        </div>
-
-        {!!  Form::close() !!}
-
-    </div>
-
+    </form>
 @endsection

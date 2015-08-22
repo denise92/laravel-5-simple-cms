@@ -6,10 +6,12 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Http\Requests\UserRequest;
+use DB;
 use Datatable;
 use Laracasts\Flash\Flash;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Auth;
+use Exception;
 
 class UserController extends Controller
 {
@@ -61,7 +63,15 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('admin.users.show', compact('user'));
+        
+        $info = DB::table('users')
+              ->join('user_companies', 'user_companies.id', '=', 'users.company_id')
+              ->join('user_groups', 'user_groups.id', '=', 'users.group_id')
+              ->select('users.*', 'user_companies.title as company', 'user_groups.title as group')
+              ->where('users.id', $user->id)
+              ->first();
+        return view('admin.users.show', ['user' => $info]);
+        // return view('admin.users.show', compact('user'));
     }
 
     /**
@@ -73,12 +83,33 @@ class UserController extends Controller
      */
     public function edit(User $user, FormBuilder $formBuilder)
     {
-        $form = $formBuilder->create('App\Forms\UsersForm', [
-            'method' => 'PATCH',
-            'url' => route('admin.user.update', ['id' => $user->id]),
-            'model' => $user
-        ]);
-        return view('admin.users.edit', compact('form', 'user'));
+        try {
+            $err = false;
+            $editor = User::find(Auth::id());
+            
+            // 最高權限的人可以修改
+            $err = ($editor->is('admin') || $editor->is('user')) ? false : true;
+            
+            // 本人可以修改
+            if($err){
+                $err = Auth::id() == $user->id ? false : true;
+            }
+            if($err){
+                throw new Exception(trans('admin.fail.user.permission'));
+            }
+            $form = $formBuilder->create('App\Forms\UsersForm', [
+                'method' => 'PATCH',
+                'url' => route('admin.user.update', ['id' => $user->id]),
+                'model' => $user
+            ]);
+            return view('admin.users.edit', compact('form', 'user'));
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+            
+            
+            
+        
     }
 
     /**
@@ -90,6 +121,7 @@ class UserController extends Controller
      */
     public function update(User $user, UserRequest $request)
     {
+
         $data = $this->storeImage($request, 'picture');
         $user->fill($data);
         $user->save() == true ? Flash::success(trans('admin.update.success')) :
@@ -141,23 +173,25 @@ class UserController extends Controller
      */
     public function getDatatable()
     {
-        return Datatable::collection(User::all())
-            ->showColumns('name', 'ip_address')
-            ->addColumn('logged_in_at', function($model)
-            {
-                return $model->logged_in_at->diffForHumans();
-            })
-            ->addColumn('logged_out_at', function($model)
-            {
-                return $model->logged_out_at->diffForHumans();
-            })
-            ->addColumn('',function($model)
-            {
-                return get_ops('user', $model->id);
-            })
-            ->searchColumns('name','ip_address')
-            ->orderColumns('name','logged_in_at','logged_out_at')
-            ->make();
+        if(Datatable::shouldHandle()){
+            return Datatable::collection(User::all())
+                ->showColumns('name', 'ip_address')
+                ->addColumn('logged_in_at', function($model)
+                {
+                    return $model->logged_in_at->diffForHumans();
+                })
+                ->addColumn('logged_out_at', function($model)
+                {
+                    return $model->logged_out_at->diffForHumans();
+                })
+                ->addColumn('',function($model)
+                {
+                    return get_ops('user', $model->id);
+                })
+                ->searchColumns('name','ip_address')
+                ->orderColumns('name','logged_in_at','logged_out_at')
+                ->make();
+        }
     }
 
     /**
@@ -169,8 +203,10 @@ class UserController extends Controller
      */
     private function storeImage(UserRequest $request, $field)
     {
+        
         $data = $request->except([$field]);
-        if($request->file($field))
+
+        /*if($request->file($field))
         {
             $file = $request->file($field);
             $request->file($field);
@@ -179,7 +215,7 @@ class UserController extends Controller
             $move_path = public_path() . $path;
             $file->move($move_path, $fileName);
             $data[$field] = $path . $fileName;
-        }
+        }*/
         return $data;
     }
 

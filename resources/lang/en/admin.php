@@ -16,30 +16,27 @@ return [
     // Menu
     "menu" => [
         "dashboard"                 => "Dashboard",
-        "article" => [
-            "root"                  => "Articles",
-            "all"                   => "All Articles",
-            "add"                   => "Add an Article"
-        ],
-        "category" => [
-            "root"                  => "Categories",
-            "all"                   => "All Categories",
-            "add"                   => "Add a Category"
-        ],
+        
         "language" => [
             "root"                  => "Languages",
             "all"                   => "All Languages",
             "add"                   => "Add a Language"
         ],
-        "page" => [
-            "root"                  => "Pages",
-            "all"                   => "All Pages",
-            "add"                   => "Add a Page"
-        ],
+        
         "user" => [
             "root"                  => "Users",
             "all"                   => "All Users",
             "add"                   => "Add a User"
+        ],
+        "company" => [
+            "root"                  => "Companies",
+            "all"                   => "All Companies",
+            "add"                   => "Add a Company"
+        ],
+        "group" => [
+            "root"                  => "Groups",
+            "all"                   => "All Groups",
+            "add"                   => "Add a Group"
         ],
         "setting"                   => "Settings"
     ],
@@ -115,14 +112,20 @@ return [
             "picture"               => "Avatar",
             "logged_in_at"          => "Login At",
             "logged_out_at"         => "Logout At",
+            "company"               => "Company",
+            "group"                 => "Group",
             "ip_address"            => "IP"
         ],
         "setting" => [
             "email"                 => "Email",
             "facebook"              => "Facebook",
-            "twitter"               => "Twitter",
+            "fb_app_id"             => "Facebook app_id",
+            "og_type"               => "Facebook og_type",
+            "og_site_name"          => "Facebook og_site_name",
+            "meta_author"           => "Meta author",
+            "meta_desc"             => "Meta desc",
+            "meta_keywords"         => "Meta keywords",
             "analytics_id"          => "Analytics ID ( Format: UA-XXXXXX-YY )",
-            "disqus_shortname"      => "Disqus Shortname",
             "logo"                  => "Logo",
         ],
         "save"                      => "Save",

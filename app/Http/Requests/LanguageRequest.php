@@ -26,7 +26,7 @@ class LanguageRequest extends Request
 	{
 		return [
             'title' => 'required|min:3',
-            'code'	=> 'required|max:6|unique:languages,code,'.$this->segment(3),
+            'code'	=> 'required|max:3|unique:languages,code,'.$this->segment(3),
             'site_title' => 'required|max:160',
             'site_description' => 'required|max:160',
             'flag' => 'sometimes|max:2048|image'

@@ -34,6 +34,17 @@ class Setting extends Model
      *
      * @var array
      */
-    protected $fillable = ['logo', 'email', 'facebook', 'twitter', 'analytics_id', 'disqus_shortname'];
+    protected $fillable = [
+    	'logo', 
+    	'email', 
+    	'facebook', 
+    	'fb_app_id', 
+    	'og_type', 
+    	'og_site_name', 
+    	'analytics_id', 
+        'meta_author', 
+    	'meta_desc', 
+    	'meta_keywords'
+    ];
 
 }

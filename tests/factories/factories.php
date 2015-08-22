@@ -1,9 +1,23 @@
 <?php
+$factory('App\UserCompany', [
+    'title' => $faker->sentence(5),
+]);
+
+$factory('App\UserCompany', [
+    'title' => $faker->sentence(5),
+]);
+
+$factory('App\UserGroup', [
+    'title' => $faker->sentence(5),
+]);
 
 $factory('App\User', [
     'name' => $faker->userName,
     'email' => $faker->email,
-    'password' => $faker->sha256
+    // 'password' => $faker->sha256
+    'password' => Hash::make('123456'),
+    'company_id' => $faker->numberBetween(1,15),
+    'group_id' => $faker->numberBetween(1,5)
 ]);
 
 $factory('App\Category', [

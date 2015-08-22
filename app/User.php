@@ -9,50 +9,44 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Bican\Roles\Traits\HasRoleAndPermission;
+use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
 
-/**
- * App\User
- *
- * @property integer $id
- * @property string $name
- * @property string $email
- * @property string $password
- * @property string $remember_token
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\User whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User wherePassword($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedAt($value)
- * @property string $logged_in_at
- * @property string $logged_out_at
- * @property mixed $ip_address
- * @property string $picture
- * @method static \Illuminate\Database\Query\Builder|\App\User whereLoggedInAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereLoggedOutAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereIpAddress($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User wherePicture($value)
- */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-	use Authenticatable, CanResetPassword;
+    use Authenticatable, CanResetPassword, HasRoleAndPermission;
+    use SoftDeletes;
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = ['name', 'email', 'password', 'picture'];
+    /**
+     * SoftDeletes：需要被轉換成日期的屬性。
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = ['password', 'remember_token'];
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'email', 'password', 'company_id', 'group_id'];
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['password', 'remember_token'];
+
+    
 
     /**
      * Set password encrypted
@@ -72,6 +66,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function getLoggedInAtAttribute($date)
     {
+        // 將傳入的 Y-m-d 時間設為 datetime 格式的凌晨零時 00:00:00
         return Carbon::parse($date);
     }
 
@@ -83,6 +78,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function getLoggedOutAtAttribute($date)
     {
+        // 將傳入的 Y-m-d 時間設為 datetime 格式的凌晨零時 00:00:00
         return Carbon::parse($date);
     }
 
@@ -94,9 +90,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setIpAddressAttribute($ip)
     {
-        $this->attributes['ip_address'] = inet_pton($ip);
-    }
 
+        $this->attributes['ip_address'] = $ip;
+        // $this->attributes['ip_address'] = inet_pton($ip);
+        // $this->attributes['ip_address'] = pg_escape_bytea(inet_pton( $ip ));
+
+    }
 
     /**
      * Get the ip address attribute.
@@ -106,7 +105,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function getIpAddressAttribute($ip)
     {
-        return inet_ntop($ip);
+        // return pg_escape_bytea(inet_ntop($ip));
+        // return inet_ntop($ip);
+        return $ip;
+
     }
 
 }

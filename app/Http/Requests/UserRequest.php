@@ -15,6 +15,7 @@ class UserRequest extends Request
      */
     public function authorize()
     {
+
         return true;
     }
 
@@ -26,10 +27,11 @@ class UserRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|min:3',
-            'email'	=> 'required|email|min:7|unique:users,email,'.$this->segment(3),
-            'password' => 'required|confirmed|min:6|max:20',
-            'picture' => 'sometimes|max:2048|image'
+            'name'       => 'required|min:3',
+            'email'      => 'required|email|min:7|unique:users,email,'.$this->segment(3),
+            'password'   => 'required|confirmed|min:6|max:20',
+            'company_id' => 'required|integer',
+            'group_id'   => 'required|integer'
         ];
     }
 

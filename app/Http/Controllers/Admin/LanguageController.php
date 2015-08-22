@@ -9,6 +9,7 @@ use App\Language;
 use Laracasts\Flash\Flash;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Datatable;
+use DB;
 use Session;
 use Input;
 use Redirect;
@@ -23,7 +24,13 @@ class LanguageController extends Controller
     public function index()
     {
         $table = $this->setDatatable();
+        
         return view('admin.languages.index', compact('table'));
+
+        $table = DB::table('languages')
+                        ->select('id', 'title', 'code', 'updated_at')
+                        ->get();
+        return view('admin.languages.index', ['table' => $table]);
     }
 
     /**
@@ -130,7 +137,7 @@ class LanguageController extends Controller
      * @throws \Exception
      */
     private function setDatatable()
-    {
+    {   
         return Datatable::table()
             ->addColumn(trans('admin.fields.language.title'), trans('admin.fields.language.code'), trans('admin.fields.updated_at'))
             ->addColumn(trans('admin.ops.name'))
@@ -146,19 +153,21 @@ class LanguageController extends Controller
      */
     public function getDatatable()
     {
-        return Datatable::collection(Language::all())
-            ->showColumns('title', 'code')
-            ->addColumn('updated_at', function($model)
-            {
-                return $model->updated_at->diffForHumans();
-            })
-            ->addColumn('',function($model)
-            {
-                return get_ops('language', $model->id);
-            })
-            ->searchColumns('title')
-            ->orderColumns('title','code')
-            ->make();
+        if(Datatable::shouldHandle()){
+            return Datatable::collection(Language::all())
+                ->showColumns('title', 'code')
+                ->addColumn('updated_at', function($model)
+                {
+                    return $model->updated_at->diffForHumans();
+                })
+                ->addColumn('',function($model)
+                {
+                    return get_ops('language', $model->id);
+                })
+                ->searchColumns('title')
+                ->orderColumns('title','code')
+                ->make();
+        }
     }
 
     /**

@@ -27,13 +27,13 @@ class AuthController extends Controller
      */
     protected $redirectTo = '/admin';
 
-	/**
-	 * Create a new authentication controller instance.
-	 *
-	 */
-	public function __construct()
-	{
-		$this->middleware('guest', ['except' => 'getLogout']);
-	}
+    /**
+     * Create a new authentication controller instance.
+     *
+     */
+    public function __construct()
+    {
+        $this->middleware('guest', ['except' => 'getLogout']);
+    }
 
 }

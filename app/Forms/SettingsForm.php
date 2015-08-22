@@ -15,14 +15,26 @@ class SettingsForm extends Form
             ->add('facebook', 'text', [
                 'label' => trans('admin.fields.setting.facebook')
             ])
-            ->add('twitter', 'text', [
-                'label' => trans('admin.fields.setting.twitter')
+            ->add('fb_app_id', 'text', [
+                'label' => trans('admin.fields.setting.fb_app_id')
+            ])
+            ->add('og_type', 'text', [
+                'label' => trans('admin.fields.setting.og_type')
+            ])
+            ->add('og_site_name', 'text', [
+                'label' => trans('admin.fields.setting.og_site_name')
             ])
             ->add('analytics_id', 'text', [
                 'label' => trans('admin.fields.setting.analytics_id')
             ])
-            ->add('disqus_shortname', 'text', [
-                'label' => trans('admin.fields.setting.disqus_shortname')
+            ->add('meta_author', 'text', [
+                'label' => trans('admin.fields.setting.meta_author')
+            ])
+            ->add('meta_desc', 'textarea', [
+                'label' => trans('admin.fields.setting.meta_desc')
+            ])
+            ->add('meta_keywords', 'textarea', [
+                'label' => trans('admin.fields.setting.meta_keywords')
             ])
             ->add('logo', 'file', [
                 'label' => trans('admin.fields.setting.logo'),
